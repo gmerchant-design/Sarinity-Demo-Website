@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sarinity — Crystals for the Mind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest:   #0b120e;
+    --deep:     #111c15;
+    --moss:     #2d4a35;
+    --fern:     #4a7a56;
+    --sage:     #8aad96;
+    --mist:     #b8d4be;
+    --cream:    #f4f1ea;
+    --gold:     #c8a96e;
+    --clay:     #d4b896;
+    --eucalyptus: rgba(138,173,150,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--forest);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ─── GRAIN ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.8rem 4rem;
+    background: linear-gradient(to bottom, rgba(11,18,14,0.97), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--mist);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: rgba(244,241,234,0.55);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--mist); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 8rem 2rem 4rem;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .orb-1 {
+    width: 560px; height: 560px;
+    background: radial-gradient(circle, rgba(45,74,53,0.55) 0%, transparent 70%);
+    top: -120px; left: -120px;
+    animation: drift1 14s ease-in-out infinite;
+  }
+
+  .orb-2 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(74,122,86,0.3) 0%, transparent 70%);
+    bottom: 0; right: -80px;
+    animation: drift2 16s ease-in-out infinite;
+  }
+
+  .orb-3 {
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(138,173,150,0.18) 0%, transparent 70%);
+    top: 40%; left: 55%;
+    animation: drift3 11s ease-in-out infinite;
+  }
+
+  @keyframes drift1 {
+    0%, 100% { transform: translate(0,0); }
+    50% { transform: translate(50px, 35px); }
+  }
+  @keyframes drift2 {
+    0%, 100% { transform: translate(0,0); }
+    50% { transform: translate(-35px, -55px); }
+  }
+  @keyframes drift3 {
+    0%, 100% { transform: translate(0,0); }
+    50% { transform: translate(-25px, 45px); }
+  }
+
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.8rem;
+    animation: fadeUp 1s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 1s ease 0.15s both;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--sage);
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    color: rgba(244,241,234,0.6);
+    max-width: 480px;
+    line-height: 1.75;
+    margin-bottom: 3rem;
+    animation: fadeUp 1s ease 0.3s both;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1.2rem;
+    animation: fadeUp 1s ease 0.45s both;
+  }
+
+  .btn-primary {
+    padding: 0.85rem 2.4rem;
+    background: linear-gradient(135deg, var(--moss), var(--fern));
+    color: var(--cream);
+    border: none;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.08);
+    transform: translateX(-100%);
+    transition: transform 0.4s;
+  }
+
+  .btn-primary:hover::after { transform: translateX(0); }
+
+  .btn-ghost {
+    padding: 0.85rem 2.4rem;
+    background: transparent;
+    color: var(--mist);
+    border: 1px solid rgba(184,212,190,0.3);
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(138,173,150,0.08);
+    border-color: var(--mist);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(244,241,234,0.25);
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    animation: fadeUp 1s ease 0.8s both;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, rgba(138,173,150,0.5));
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(0.6); }
+  }
+
+  /* ─── MARQUEE ─── */
+  .divider {
+    width: 100%;
+    overflow: hidden;
+    padding: 1.8rem 0;
+    background: var(--deep);
+    border-top: 1px solid rgba(138,173,150,0.08);
+    border-bottom: 1px solid rgba(138,173,150,0.08);
+  }
+
+  .marquee {
+    display: flex;
+    gap: 3rem;
+    animation: marquee 22s linear infinite;
+    white-space: nowrap;
+  }
+
+  .marquee span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    font-style: italic;
+    letter-spacing: 0.25em;
+    color: rgba(138,173,150,0.5);
+  }
+
+  .marquee .gem {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ─── PHILOSOPHY ─── */
+  .philosophy {
+    padding: 8rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .philosophy-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 1.5rem;
+  }
+
+  .philosophy-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+  }
+
+  .philosophy-title em {
+    font-style: italic;
+    color: var(--mist);
+  }
+
+  .philosophy-body {
+    color: rgba(244,241,234,0.6);
+    line-height: 1.9;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .philosophy-visual {
+    position: relative;
+    height: 460px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .crystal-cluster {
+    position: relative;
+    width: 280px;
+    height: 280px;
+  }
+
+  .crystal {
+    position: absolute;
+  }
+
+  .crystal-1 {
+    width: 80px; height: 160px;
+    clip-path: polygon(50% 0%, 100% 30%, 100% 85%, 50% 100%, 0% 85%, 0% 30%);
+    top: 10px; left: 100px;
+    background: linear-gradient(160deg, rgba(138,173,150,0.7), rgba(45,74,53,0.5));
+    border: 1px solid rgba(138,173,150,0.2);
+    animation: crystalFloat 6s ease-in-out infinite;
+  }
+
+  .crystal-2 {
+    width: 60px; height: 120px;
+    clip-path: polygon(50% 0%, 100% 30%, 100% 85%, 50% 100%, 0% 85%, 0% 30%);
+    top: 80px; left: 40px;
+    background: linear-gradient(160deg, rgba(184,212,190,0.6), rgba(74,122,86,0.4));
+    border: 1px solid rgba(184,212,190,0.15);
+    animation: crystalFloat 8s ease-in-out 1s infinite;
+    transform: rotate(-15deg);
+  }
+
+  .crystal-3 {
+    width: 55px; height: 100px;
+    clip-path: polygon(50% 0%, 100% 30%, 100% 85%, 50% 100%, 0% 85%, 0% 30%);
+    top: 100px; left: 185px;
+    background: linear-gradient(160deg, rgba(200,169,110,0.5), rgba(138,173,150,0.4));
+    border: 1px solid rgba(200,169,110,0.15);
+    animation: crystalFloat 7s ease-in-out 0.5s infinite;
+    transform: rotate(12deg);
+  }
+
+  .crystal-4 {
+    width: 45px; height: 85px;
+    clip-path: polygon(50% 0%, 100% 30%, 100% 85%, 50% 100%, 0% 85%, 0% 30%);
+    top: 170px; left: 65px;
+    background: linear-gradient(160deg, rgba(138,173,150,0.5), rgba(45,74,53,0.4));
+    border: 1px solid rgba(138,173,150,0.1);
+    animation: crystalFloat 9s ease-in-out 2s infinite;
+    transform: rotate(-8deg);
+  }
+
+  .glow-base {
+    position: absolute;
+    bottom: -20px;
+    width: 250px;
+    height: 60px;
+    background: radial-gradient(ellipse, rgba(74,122,86,0.35), transparent 70%);
+    filter: blur(20px);
+  }
+
+  @keyframes crystalFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(138,173,150,0.08);
+    animation: ringPulse 4s ease-in-out infinite;
+  }
+
+  .ring-1 { width: 320px; height: 320px; animation-delay: 0s; }
+  .ring-2 { width: 400px; height: 400px; animation-delay: 1s; }
+  .ring-3 { width: 480px; height: 480px; animation-delay: 2s; }
+
+  @keyframes ringPulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.1; transform: scale(1.02); }
+  }
+
+  /* ─── COLLECTION ─── */
+  .collection {
+    padding: 6rem 4rem;
+    background: var(--deep);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300;
+  }
+
+  .section-title em { font-style: italic; color: var(--sage); }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(138,173,150,0.1);
+    padding: 2.5rem 2rem;
+    cursor: pointer;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--card-color, rgba(45,74,53,0.15)), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .card:hover { transform: translateY(-4px); border-color: rgba(138,173,150,0.25); }
+  .card:hover::before { opacity: 1; }
+
+  .card-gem {
+    font-size: 2.5rem;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+
+  .card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 0.4rem;
+    color: var(--mist);
+  }
+
+  .card-type {
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .card-desc {
+    font-size: 0.9rem;
+    color: rgba(244,241,234,0.55);
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-benefit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid rgba(138,173,150,0.2);
+    color: rgba(138,173,150,0.7);
+  }
+
+  .card-price {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+  }
+
+  /* ─── RITUAL ─── */
+  .ritual {
+    padding: 8rem 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .ritual-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .ritual-title em { font-style: italic; color: var(--clay); }
+
+  .ritual-body {
+    color: rgba(244,241,234,0.6);
+    line-height: 1.9;
+    font-size: 1rem;
+    max-width: 620px;
+    margin: 0 auto 3rem;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+    text-align: left;
+  }
+
+  .step {
+    padding: 2rem;
+    border-left: 1px solid rgba(138,173,150,0.15);
+  }
+
+  .step-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    color: rgba(138,173,150,0.15);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: var(--mist);
+  }
+
+  .step-desc {
+    font-size: 0.88rem;
+    color: rgba(244,241,234,0.5);
+    line-height: 1.75;
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials {
+    padding: 6rem 4rem;
+    background: linear-gradient(to bottom, var(--deep), var(--forest));
+  }
+
+  .quotes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 3rem auto 0;
+  }
+
+  .quote {
+    padding: 2rem;
+    border: 1px solid rgba(138,173,150,0.08);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    line-height: 1.7;
+    color: rgba(244,241,234,0.78);
+    margin-bottom: 1.5rem;
+  }
+
+  .quote-author {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .stars {
+    color: var(--gold);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  /* ─── CTA ─── */
+  .cta-section {
+    padding: 8rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-orb {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(45,74,53,0.3) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    filter: blur(50px);
+  }
+
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .cta-title em { font-style: italic; color: var(--sage); }
+
+  .cta-body {
+    color: rgba(244,241,234,0.5);
+    max-width: 440px;
+    margin: 0 auto 3rem;
+    line-height: 1.8;
+    position: relative;
+  }
+
+  .email-form {
+    display: flex;
+    max-width: 420px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .email-input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(138,173,150,0.2);
+    border-right: none;
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .email-input::placeholder { color: rgba(244,241,234,0.25); }
+  .email-input:focus { border-color: rgba(138,173,150,0.5); }
+
+  .email-btn {
+    padding: 1rem 1.8rem;
+    background: var(--moss);
+    color: var(--cream);
+    border: none;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: background 0.3s;
+  }
+
+  .email-btn:hover { background: var(--fern); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 3rem 4rem;
+    background: #070d09;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(138,173,150,0.06);
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--mist);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-note {
+    font-size: 0.72rem;
+    color: rgba(244,241,234,0.22);
+    letter-spacing: 0.05em;
+    max-width: 360px;
+    line-height: 1.7;
+    text-align: center;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    text-decoration: none;
+    color: rgba(244,241,234,0.3);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--mist); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 1.5rem 2rem; }
+    .nav-links { display: none; }
+    .philosophy { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 2rem; }
+    .cards { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .quotes { grid-template-columns: 1fr; }
+    .collection, .ritual, .cta-section, .testimonials { padding: 5rem 2rem; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Sarinity</div>
+  <ul class="nav-links">
+    <li><a href="#collection">Collection</a></li>
+    <li><a href="#ritual">Ritual</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#journal">Journal</a></li>
+  </ul>
+  <a href="#collection" class="btn-primary" style="padding: 0.6rem 1.6rem; font-size: 0.72rem;">Shop Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <p class="hero-eyebrow">Earth-formed · Intention-set · Mind-attuned</p>
+  <h1 class="hero-title">
+    Crystals for<br>the <em>quieter</em> mind
+  </h1>
+  <p class="hero-subtitle">
+    Thoughtfully curated stones to support your emotional wellbeing — paired with mindfulness practices for daily ritual.
+  </p>
+  <div class="hero-cta">
+    <a href="#collection" class="btn-primary">Explore Collection</a>
+    <a href="#ritual" class="btn-ghost">Our Approach</a>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="divider">
+  <div class="marquee">
+    <span>Amethyst</span><span class="gem">✦</span>
+    <span>Rose Quartz</span><span class="gem">✦</span>
+    <span>Black Tourmaline</span><span class="gem">✦</span>
+    <span>Selenite</span><span class="gem">✦</span>
+    <span>Lapis Lazuli</span><span class="gem">✦</span>
+    <span>Lepidolite</span><span class="gem">✦</span>
+    <span>Citrine</span><span class="gem">✦</span>
+    <span>Green Aventurine</span><span class="gem">✦</span>
+    <span>Amethyst</span><span class="gem">✦</span>
+    <span>Rose Quartz</span><span class="gem">✦</span>
+    <span>Black Tourmaline</span><span class="gem">✦</span>
+    <span>Selenite</span><span class="gem">✦</span>
+    <span>Lapis Lazuli</span><span class="gem">✦</span>
+    <span>Lepidolite</span><span class="gem">✦</span>
+    <span>Citrine</span><span class="gem">✦</span>
+    <span>Green Aventurine</span><span class="gem">✦</span>
+  </div>
+</div>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy" id="about">
+  <div class="reveal">
+    <p class="philosophy-label">Our Philosophy</p>
+    <h2 class="philosophy-title">
+      Not magic.<br><em>Mindfulness</em><br>made tangible.
+    </h2>
+    <p class="philosophy-body">
+      We don't claim crystals are medicine. What we believe — and what research into ritual and intention supports — is that physical objects can anchor mental practices.
+    </p>
+    <p class="philosophy-body">
+      Each Sarinity stone comes with a tailored mindfulness guide, breathwork card, and journaling prompt. The crystal is the reminder. The practice is the work.
+    </p>
+    <a href="#collection" class="btn-ghost" style="display: inline-block; margin-top: 1rem;">See the collection</a>
+  </div>
+
+  <div class="philosophy-visual reveal">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="crystal-cluster">
+      <div class="crystal crystal-1"></div>
+      <div class="crystal crystal-2"></div>
+      <div class="crystal crystal-3"></div>
+      <div class="crystal crystal-4"></div>
+    </div>
+    <div class="glow-base"></div>
+  </div>
+</section>
+
+<!-- COLLECTION -->
+<section class="collection" id="collection">
+  <div class="section-header reveal">
+    <p class="section-label">The Collection</p>
+    <h2 class="section-title">Stones for every <em>state of mind</em></h2>
+  </div>
+
+  <div class="cards">
+    <div class="card reveal" style="--card-color: rgba(45,74,53,0.2);">
+      <span class="card-gem">💚</span>
+      <div class="card-price">£28</div>
+      <div class="card-name">Green Aventurine</div>
+      <div class="card-type">Calm & Clarity</div>
+      <p class="card-desc">For the restless mind. Hold during breathing exercises or place on your nightstand to support sleep rituals and quiet anxious thought patterns.</p>
+      <span class="card-benefit">✧ Anxiety Support Kit</span>
+    </div>
+
+    <div class="card reveal" style="--card-color: rgba(138,173,150,0.12);">
+      <span class="card-gem">🌸</span>
+      <div class="card-price">£24</div>
+      <div class="card-name">Rose Quartz</div>
+      <div class="card-type">Self-Compassion</div>
+      <p class="card-desc">For the inner critic. A tactile reminder to meet yourself with gentleness. Paired with a self-compassion journaling practice and affirmation cards.</p>
+      <span class="card-benefit">✧ Self-Love Ritual Set</span>
+    </div>
+
+    <div class="card reveal" style="--card-color: rgba(20,35,22,0.4);">
+      <span class="card-gem">🖤</span>
+      <div class="card-price">£32</div>
+      <div class="card-name">Black Tourmaline</div>
+      <div class="card-type">Grounding</div>
+      <p class="card-desc">For overwhelming days. A grounding stone to use during 5-4-3-2-1 sensory exercises. Helps anchor you to the present when anxiety spirals.</p>
+      <span class="card-benefit">✧ Grounding Practice Guide</span>
+    </div>
+
+    <div class="card reveal" style="--card-color: rgba(200,169,110,0.1);">
+      <span class="card-gem">🌿</span>
+      <div class="card-price">£26</div>
+      <div class="card-name">Jade</div>
+      <div class="card-type">Mood & Balance</div>
+      <p class="card-desc">For low-energy days. A grounding, warm stone to anchor morning intention-setting routines. Comes with a gentle motivational practice for low-mood days.</p>
+      <span class="card-benefit">✧ Morning Ritual Card</span>
+    </div>
+
+    <div class="card reveal" style="--card-color: rgba(74,122,86,0.12);">
+      <span class="card-gem">🤍</span>
+      <div class="card-price">£30</div>
+      <div class="card-name">Selenite</div>
+      <div class="card-type">Mental Clarity</div>
+      <p class="card-desc">For mental fog and decision fatigue. Use in body-scan meditations to create a sense of spaciousness and calm when your thoughts feel tangled.</p>
+      <span class="card-benefit">✧ Body Scan Audio Guide</span>
+    </div>
+
+    <div class="card reveal" style="--card-color: rgba(45,74,53,0.25);">
+      <span class="card-gem">✨</span>
+      <div class="card-price">£48</div>
+      <div class="card-name">The Starter Set</div>
+      <div class="card-type">Full Ritual Kit</div>
+      <p class="card-desc">Three stones, three practices. Our most popular introduction to mindful crystal work — includes aventurine, rose quartz, and selenite with a full 30-day ritual guide.</p>
+      <span class="card-benefit">✧ 30-Day Mind Journal</span>
+    </div>
+  </div>
+</section>
+
+<!-- RITUAL -->
+<section class="ritual" id="ritual">
+  <p class="section-label reveal">How It Works</p>
+  <h2 class="ritual-title reveal">More than a stone.<br><em>A practice.</em></h2>
+  <p class="ritual-body reveal">
+    Every Sarinity crystal ships with a science-informed mindfulness practice designed to pair with that specific stone. We make no health claims — just a beautiful, tactile anchor for the work you're already doing.
+  </p>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-number">01</div>
+      <div class="step-title">Choose Your Stone</div>
+      <p class="step-desc">Browse by emotional need — anxiety, low mood, overwhelm, self-criticism — and find the stone and practice that resonates.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-number">02</div>
+      <div class="step-title">Set Your Intention</div>
+      <p class="step-desc">Use the included intention card to define what this stone will mean to you. This act of reflection is where the practice begins.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-number">03</div>
+      <div class="step-title">Build the Ritual</div>
+      <p class="step-desc">Follow the practice guide daily for 30 days. The stone becomes a cue — a physical reminder that grounds your mind in the present moment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-header reveal">
+    <p class="section-label">From Our Community</p>
+    <h2 class="section-title">Quiet <em>transformations</em></h2>
+  </div>
+
+  <div class="quotes">
+    <div class="quote reveal">
+      <div class="stars">★★★★★</div>
+      <p class="quote-text">"I was skeptical, but the journaling practice alone was worth it. The aventurine just keeps me honest — when I see it I remember to breathe."</p>
+      <div class="quote-author">— Priya M., London</div>
+    </div>
+    <div class="quote reveal">
+      <div class="stars">★★★★★</div>
+      <p class="quote-text">"My therapist actually encouraged me to try it as a grounding object. The black tourmaline has become part of my anxiety toolkit."</p>
+      <div class="quote-author">— James T., Edinburgh</div>
+    </div>
+    <div class="quote reveal">
+      <div class="stars">★★★★★</div>
+      <p class="quote-text">"I love that they're honest that it's not magic. It's a mindfulness practice with a beautiful object at the centre. That's exactly what I needed."</p>
+      <div class="quote-author">— Sarah K., Bristol</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-orb"></div>
+  <h2 class="cta-title reveal">Begin your<br><em>ritual</em> today</h2>
+  <p class="cta-body reveal">Join 4,000+ people who have made crystals the anchor of a daily mindfulness practice. Free UK shipping on all orders.</p>
+  <div class="email-form reveal">
+    <input type="email" class="email-input" placeholder="Your email address">
+    <button class="email-btn">Join Waitlist</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Sarinity</div>
+  <p class="footer-note">Crystals are not a substitute for professional mental health support. If you are struggling, please speak to your GP or contact a mental health service.</p>
+  <ul class="footer-links">
+    <li><a href="#">Instagram</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
