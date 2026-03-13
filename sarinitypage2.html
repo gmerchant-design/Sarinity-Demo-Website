@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Stone — Sarinity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest:  #0b120e;
+    --deep:    #111c15;
+    --moss:    #2d4a35;
+    --fern:    #4a7a56;
+    --sage:    #8aad96;
+    --mist:    #b8d4be;
+    --cream:   #f4f1ea;
+    --gold:    #c8a96e;
+    --clay:    #d4b896;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--forest);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 7rem 2rem 4rem;
+    overflow-x: hidden;
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(45,74,53,0.45) 0%, transparent 70%);
+    top: -150px; left: -150px;
+    animation: drift1 14s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, rgba(74,122,86,0.2) 0%, transparent 70%);
+    bottom: -80px; right: -80px;
+    animation: drift2 16s ease-in-out infinite;
+  }
+  @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,30px)} }
+  @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,-40px)} }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.6rem 4rem;
+    background: linear-gradient(to bottom, rgba(11,18,14,0.97), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--mist);
+    text-decoration: none;
+  }
+
+  .nav-back {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(244,241,234,0.4);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-back:hover { color: var(--mist); }
+
+  .quiz-wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 660px;
+  }
+
+  .quiz-intro {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .intro-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .intro-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .intro-title em { font-style: italic; color: var(--sage); }
+
+  .intro-sub {
+    font-size: 0.92rem;
+    color: rgba(244,241,234,0.55);
+    line-height: 1.8;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  .progress-wrap {
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 1px;
+    background: rgba(138,173,150,0.1);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--moss), var(--sage));
+    transition: width 0.6s ease;
+    width: 0%;
+  }
+
+  .progress-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    color: rgba(138,173,150,0.45);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .question-block {
+    display: none;
+    animation: fadeUp 0.5s ease both;
+  }
+  .question-block.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-number {
+    font-size: 0.63rem;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    font-weight: 300;
+    line-height: 1.3;
+    margin-bottom: 2.2rem;
+  }
+
+  .q-text em { font-style: italic; color: var(--sage); }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .option {
+    padding: 1rem 1.5rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(138,173,150,0.1);
+    color: rgba(244,241,234,0.7);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .option::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--sage);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.25s;
+  }
+
+  .option:hover {
+    background: rgba(45,74,53,0.2);
+    border-color: rgba(138,173,150,0.25);
+    color: var(--cream);
+    padding-left: 2rem;
+  }
+  .option:hover::before { transform: scaleY(1); }
+
+  .option.selected {
+    background: rgba(45,74,53,0.3);
+    border-color: rgba(138,173,150,0.4);
+    color: var(--cream);
+    padding-left: 2rem;
+  }
+  .option.selected::before { transform: scaleY(1); }
+
+  .next-btn {
+    padding: 0.9rem 2.5rem;
+    background: linear-gradient(135deg, var(--moss), var(--fern));
+    color: var(--cream);
+    border: none;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    transition: opacity 0.3s;
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .next-btn.ready {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .next-btn.ready:hover { opacity: 0.82; }
+
+  /* ─── RESULT ─── */
+  .result-block {
+    display: none;
+    animation: fadeUp 0.8s ease both;
+    text-align: center;
+  }
+  .result-block.active { display: block; }
+
+  .result-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .crystal-icon {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 2rem;
+  }
+
+  .crystal-icon svg {
+    animation: gemGlow 4s ease-in-out infinite;
+  }
+
+  @keyframes gemGlow {
+    0%,100% { filter: drop-shadow(0 0 10px rgba(138,173,150,0.3)); }
+    50%      { filter: drop-shadow(0 0 28px rgba(138,173,150,0.65)); }
+  }
+
+  .result-stone {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+
+  .result-type {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 2rem;
+  }
+
+  .result-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 0 auto 2rem;
+  }
+
+  .result-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    line-height: 1.85;
+    color: rgba(244,241,234,0.8);
+    max-width: 520px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .result-practice {
+    font-size: 0.88rem;
+    color: rgba(244,241,234,0.5);
+    line-height: 1.8;
+    max-width: 480px;
+    margin: 0 auto 3rem;
+    border-left: 1px solid rgba(138,173,150,0.2);
+    padding-left: 1.2rem;
+    text-align: left;
+  }
+
+  .result-practice-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .result-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    padding: 0.85rem 2.2rem;
+    background: linear-gradient(135deg, var(--moss), var(--fern));
+    color: var(--cream);
+    border: none;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: opacity 0.3s;
+    display: inline-block;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-ghost {
+    padding: 0.85rem 2.2rem;
+    background: transparent;
+    color: var(--mist);
+    border: 1px solid rgba(184,212,190,0.25);
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover { background: rgba(138,173,150,0.08); border-color: var(--mist); }
+
+  @media (max-width: 600px) {
+    nav { padding: 1.4rem 1.5rem; }
+    body { padding: 6rem 1.5rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Sarinity</a>
+<a href="index.html" class="nav-back">← Back</a>
+</nav>
+
+<div class="quiz-wrap">
+
+  <div class="quiz-intro">
+    <p class="intro-label">Stone Finder</p>
+    <h1 class="intro-title">Find your <em>stone</em></h1>
+    <p class="intro-sub">Five questions. No right answers. Just an honest look at where you are right now.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-label" id="progressLabel">1 of 5</span>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-block active" id="q1">
+    <p class="q-number">Question 01</p>
+    <h2 class="q-text">What's been weighing on you <em>most</em> lately?</h2>
+    <div class="options">
+      <button class="option" data-scores='{"amethyst":2,"blue_lace_agate":2,"kunzite":1,"lepidolite":1}'>Anxiety — my mind won't slow down</button>
+      <button class="option" data-scores='{"rose_quartz":2,"opal":1,"citrine":1}'>Low mood or feeling a bit lost</button>
+      <button class="option" data-scores='{"obsidian":2,"black_tourmaline":2,"tigers_eye":1}'>Stress — work, people, everything feels like too much</button>
+      <button class="option" data-scores='{"moonstone":2,"jade":1,"apatite":1}'>Hormones, cycles or a big life transition</button>
+      <button class="option" data-scores='{"sunstone":2,"citrine":1,"tigers_eye":1}'>Low energy — no motivation, no creativity</button>
+      <button class="option" data-scores='{"emerald":2,"jade":1,"obsidian":1}'>My health — physically or mentally run down</button>
+    </div>
+    <button class="next-btn" id="next1" onclick="nextQuestion(1)">Next</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-block" id="q2">
+    <p class="q-number">Question 02</p>
+    <h2 class="q-text">How would you describe how you're <em>feeling</em> right now?</h2>
+    <div class="options">
+      <button class="option" data-scores='{"blue_lace_agate":2,"lepidolite":2,"kunzite":1}'>On edge — like something bad is about to happen</button>
+      <button class="option" data-scores='{"opal":2,"citrine":1,"rose_quartz":1}'>Angry or frustrated with things</button>
+      <button class="option" data-scores='{"rose_quartz":2,"moonstone":1}'>Lonely or disconnected from the people around me</button>
+      <button class="option" data-scores='{"obsidian":2,"black_tourmaline":1,"jade":1}'>Drained — by people, work, everything</button>
+      <button class="option" data-scores='{"tigers_eye":2,"sunstone":1,"apatite":1}'>Stuck — like I can't move forward no matter what I do</button>
+      <button class="option" data-scores='{"jade":2,"apatite":1,"emerald":1}'>Foggy — I just can't think straight</button>
+    </div>
+    <button class="next-btn" id="next2" onclick="nextQuestion(2)">Next</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-block" id="q3">
+    <p class="q-number">Question 03</p>
+    <h2 class="q-text">What do you most want to <em>feel</em> more of?</h2>
+    <div class="options">
+      <button class="option" data-scores='{"rose_quartz":2,"citrine":1,"moonstone":1}'>Warmth — towards myself and others</button>
+      <button class="option" data-scores='{"amethyst":2,"blue_lace_agate":1,"kunzite":2}'>Proper, settled calm</button>
+      <button class="option" data-scores='{"sunstone":2,"tigers_eye":1,"citrine":1}'>Energy — the kind that makes starting feel possible</button>
+      <button class="option" data-scores='{"obsidian":2,"black_tourmaline":2}'>Safety — like I'm a bit more protected from the world</button>
+      <button class="option" data-scores='{"apatite":2,"jade":1,"tigers_eye":1}'>Clarity — a clear head and a sense of direction</button>
+      <button class="option" data-scores='{"emerald":2,"moonstone":1,"jade":1}'>Balance — mind and body feeling like they're cooperating</button>
+    </div>
+    <button class="next-btn" id="next3" onclick="nextQuestion(3)">Next</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-block" id="q4">
+    <p class="q-number">Question 04</p>
+    <h2 class="q-text">Which of these sounds most like <em>you</em>?</h2>
+    <div class="options">
+      <button class="option" data-scores='{"black_tourmaline":2,"obsidian":1}'>I absorb other people's energy and it exhausts me</button>
+      <button class="option" data-scores='{"moonstone":2,"rose_quartz":1}'>I'm going through a big hormonal or life change</button>
+      <button class="option" data-scores='{"lepidolite":2,"blue_lace_agate":1,"amethyst":1}'>I suffer with panic attacks or waves of anxiety</button>
+      <button class="option" data-scores='{"tigers_eye":2,"sunstone":1}'>I doubt myself more than I should</button>
+      <button class="option" data-scores='{"citrine":2,"opal":1}'>I want to see the bright side but keep getting pulled under</button>
+      <button class="option" data-scores='{"apatite":2,"jade":1}'>I struggle to say what I mean or ask for what I need</button>
+    </div>
+    <button class="next-btn" id="next4" onclick="nextQuestion(4)">Next</button>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-block" id="q5">
+    <p class="q-number">Question 05</p>
+    <h2 class="q-text">What does your ideal <em>daily ritual</em> look like?</h2>
+    <div class="options">
+      <button class="option" data-scores='{"amethyst":2,"kunzite":1,"blue_lace_agate":1}'>Quiet. No phone. Just breathing and stillness.</button>
+      <button class="option" data-scores='{"sunstone":2,"citrine":2}'>Something energising that gets me ready to go</button>
+      <button class="option" data-scores='{"rose_quartz":2,"moonstone":1}'>Something gentle that sets a kind tone for the day</button>
+      <button class="option" data-scores='{"jade":2,"apatite":1,"emerald":1}'>A moment to gather my thoughts before things get busy</button>
+      <button class="option" data-scores='{"obsidian":2,"black_tourmaline":1}'>A ritual that makes me feel grounded and protected</button>
+      <button class="option" data-scores='{"tigers_eye":2,"lepidolite":1}'>Something to remind me I can handle whatever comes</button>
+    </div>
+    <button class="next-btn" id="next5" onclick="showResult()">See my stone</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-block" id="result">
+    <p class="result-label">Your stone is</p>
+    <div class="crystal-icon">
+      <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="45,5 72,25 72,65 45,85 18,65 18,25" fill="none" stroke="url(#rg)" stroke-width="1" opacity="0.7"/>
+        <polygon points="45,5 72,25 45,45" fill="url(#rf1)" opacity="0.5"/>
+        <polygon points="72,25 72,65 45,45" fill="url(#rf2)" opacity="0.4"/>
+        <polygon points="72,65 45,85 45,45" fill="url(#rf3)" opacity="0.5"/>
+        <polygon points="45,85 18,65 45,45" fill="url(#rf4)" opacity="0.4"/>
+        <polygon points="18,65 18,25 45,45" fill="url(#rf5)" opacity="0.5"/>
+        <polygon points="18,25 45,5 45,45" fill="url(#rf6)" opacity="0.45"/>
+        <circle cx="45" cy="5" r="2" fill="#c8a96e" opacity="0.9"/>
+        <line x1="45" y1="0" x2="45" y2="10" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+        <line x1="40" y1="5" x2="50" y2="5" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+        <defs>
+          <linearGradient id="rg" x1="18" y1="5" x2="72" y2="85" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#c8a96e"/><stop offset="1" stop-color="#8aad96"/>
+          </linearGradient>
+          <linearGradient id="rf1" x1="45" y1="5" x2="72" y2="45" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#b8d4be"/><stop offset="1" stop-color="#4a7a56"/>
+          </linearGradient>
+          <linearGradient id="rf2" x1="72" y1="25" x2="45" y2="65" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#8aad96"/><stop offset="1" stop-color="#2d4a35"/>
+          </linearGradient>
+          <linearGradient id="rf3" x1="72" y1="65" x2="18" y2="85" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#b8d4be"/><stop offset="1" stop-color="#4a7a56"/>
+          </linearGradient>
+          <linearGradient id="rf4" x1="45" y1="85" x2="18" y2="45" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#8aad96"/><stop offset="1" stop-color="#1a3020"/>
+          </linearGradient>
+          <linearGradient id="rf5" x1="18" y1="65" x2="45" y2="25" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6a9a78"/><stop offset="1" stop-color="#2d4a35"/>
+          </linearGradient>
+          <linearGradient id="rf6" x1="18" y1="25" x2="72" y2="5" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#c8a96e"/><stop offset="50%" stop-color="#b8d4be"/><stop offset="1" stop-color="#8aad96"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <h2 class="result-stone" id="resultName"></h2>
+    <p class="result-type" id="resultType"></p>
+    <div class="result-divider"></div>
+    <p class="result-desc" id="resultDesc"></p>
+    <div class="result-practice" style="max-width:480px; margin: 0 auto 3rem;">
+      <span class="result-practice-label">Your daily practice</span>
+      <span id="resultPractice"></span>
+    </div>
+    <div class="result-actions">
+      <a href="index.html#collection" class="btn-primary">Shop the collection</a>
+      <button class="btn-ghost" onclick="restartQuiz()">Retake the quiz</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const stones = {
+    moonstone:        { name:"Moonstone",        type:"Transition & Balance",       desc:"Moonstone is for those going through change — shifting hormones, a new chapter, or the tender and overwhelming weeks of early motherhood. It supports the parts of you that feel most vulnerable right now.", practice:"Hold your moonstone each morning and set one small, manageable intention for the day. On harder days, just hold it. That's enough." },
+    opal:             { name:"Opal",              type:"Releasing Negative Emotion",  desc:"If anger, frustration or sadness has been building with nowhere to go, Opal works with difficult emotions rather than suppressing them. It helps you move through what's heavy rather than carrying it around indefinitely.", practice:"When a difficult emotion rises, hold your opal and name the feeling out loud. Just naming it takes away some of its power." },
+    blue_lace_agate:  { name:"Blue Lace Agate",   type:"Anxiety Relief",              desc:"Whether your anxiety is something you've lived with for years or something that flares in certain moments, Blue Lace Agate has a quietly steadying quality. It won't silence the noise — but it helps you find the stillness underneath it.", practice:"Keep it in your pocket. When anxiety rises, hold it in your palm and take three slow breaths — in for four, out for six." },
+    rose_quartz:      { name:"Rose Quartz",        type:"Self-Love & Connection",      desc:"The stone of love — but more importantly, the stone of self-love. If you've been feeling lonely, unloved, or harder on yourself than you'd ever be on someone else, Rose Quartz is exactly where to start.", practice:"Each evening, hold your rose quartz and name three things you did well that day. Small things absolutely count." },
+    sunstone:         { name:"Sunstone",           type:"Creativity & Motivation",     desc:"For the days when the ideas won't come and motivation has completely abandoned you. Sunstone carries a warm, energising quality — the kind that makes starting something feel possible again.", practice:"Place your sunstone somewhere visible when you work. Before beginning a task, hold it for one minute and picture the work already done." },
+    kunzite:          { name:"Kunzite",            type:"Stress Relief",               desc:"Kunzite works on the quiet, grinding stress that builds over time — the kind that isn't dramatic but slowly wears you down. It has a deeply soothing quality that's difficult to describe until you experience it yourself.", practice:"Use your kunzite in a five-minute wind-down before bed. Hold it and consciously soften each part of your body from feet to shoulders." },
+    jade:             { name:"Jade",               type:"Clarity & Equilibrium",       desc:"When your thoughts are tangled and nothing feels clear, Jade helps restore a sense of balance. It won't make decisions for you — but it creates the mental space to make them yourself.", practice:"Hold your jade when you're overwhelmed by a decision. Take a few slow breaths and ask yourself honestly: what actually matters here?" },
+    citrine:          { name:"Citrine",            type:"Joy & Positive Energy",       desc:"Citrine is the light at the end of the tunnel, made tangible. It doesn't pretend everything is fine — it just gently reminds you that things can be. A stone of warmth, hope and quiet forward momentum.", practice:"Place your citrine somewhere you see it first thing every morning. Let it be a small daily reminder that today has the potential to be good." },
+    obsidian:         { name:"Obsidian",           type:"Protection & Grounding",      desc:"If you find yourself absorbing the energy of difficult people or situations, Obsidian acts as a shield. It grounds you in yourself and offers relief from the weight of distressing thoughts and memories.", practice:"Carry your obsidian when going somewhere draining. Afterwards, hold it and breathe — consciously releasing what you've taken on." },
+    black_tourmaline: { name:"Black Tourmaline",   type:"Emotional Stability",         desc:"For those who feel things deeply and find the world overstimulating. Black Tourmaline absorbs negative energy and gives back a steadiness — particularly useful in demanding workplaces or on difficult days.", practice:"Hold your black tourmaline whenever you feel agitated. Focus on its weight and texture — something solid when everything else feels unstable." },
+    tigers_eye:       { name:"Tiger's Eye",        type:"Confidence & Strength",       desc:"For when self-doubt is louder than your own voice. Tiger's Eye supports mental equilibrium and brings a quiet, grounded confidence — not arrogance, just a steady knowing that you are more capable than you give yourself credit for.", practice:"Before something that makes you nervous, hold your tiger's eye and say quietly: I have done hard things before. I can do this." },
+    lepidolite:       { name:"Lepidolite",         type:"Calm & Panic Relief",         desc:"One of the most effective stones for anxiety and panic attacks. Lepidolite has a deeply calming energy that works particularly well in moments when anxiety peaks sharply and breathing feels difficult.", practice:"Keep your lepidolite with you at all times. During a panic attack, hold it and focus only on its texture — let the physical sensation anchor you." },
+    apatite:          { name:"Apatite",            type:"Communication & Expression",  desc:"If you struggle to express yourself — whether that's saying what you mean, communicating clearly, or simply getting your thoughts in order — Apatite supports the connection between what you feel and what you say.", practice:"Before a difficult conversation, hold your apatite and take a moment to organise your thoughts. What do you actually want to say?" },
+    amethyst:         { name:"Amethyst",           type:"Deep Calm & Focus",           desc:"Known as a natural tranquilliser — and honestly, that's exactly what it feels like. Amethyst quiets a busy mind, supports clearer judgement and brings the kind of calm that lets you actually think straight and get things done.", practice:"Keep your amethyst on your desk or wear it when you need focus. When your mind races, hold it and take five slow, deliberate breaths." },
+    emerald:          { name:"Emerald",            type:"Health & Vitality",           desc:"When your mental health is being dragged down by physical struggles, Emerald works on both at once. Wearing it on the ring or little finger is said to support the body's recovery and lift the emotional weight that comes with feeling unwell.", practice:"Each morning, hold your emerald and set the intention of feeling a little better than yesterday. Small improvements are still improvements." }
+  };
+
+  let scores = {};
+  let currentQ = 1;
+  const totalQ = 5;
+  Object.keys(stones).forEach(k => scores[k] = 0);
+
+  // attach option listeners
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qBlock = this.closest('.question-block');
+      const qId = qBlock.id.replace('q','');
+
+      // deselect others
+      qBlock.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+
+      // update scores
+      if (qBlock._lastScores) {
+        Object.keys(qBlock._lastScores).forEach(k => { if(scores[k]!==undefined) scores[k] -= qBlock._lastScores[k]; });
+      }
+      const data = JSON.parse(this.dataset.scores);
+      qBlock._lastScores = data;
+      Object.keys(data).forEach(k => { if(scores[k]!==undefined) scores[k] += data[k]; });
+
+      // enable next
+      const nextBtn = document.getElementById('next' + qId);
+      if (nextBtn) nextBtn.classList.add('ready');
+    });
+  });
+
+  function nextQuestion(current) {
+    document.getElementById('q' + current).classList.remove('active');
+    currentQ = current + 1;
+    document.getElementById('q' + currentQ).classList.add('active');
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress() {
+    const pct = ((currentQ - 1) / totalQ) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = currentQ + ' of ' + totalQ;
+  }
+
+  function showResult() {
+    document.getElementById('q5').classList.remove('active');
+    const topStone = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+    const stone = stones[topStone];
+    document.getElementById('resultName').textContent = stone.name;
+    document.getElementById('resultType').textContent = stone.type;
+    document.getElementById('resultDesc').textContent = stone.desc;
+    document.getElementById('resultPractice').textContent = stone.practice;
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('progressLabel').textContent = 'Complete';
+    document.getElementById('result').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function restartQuiz() {
+    Object.keys(stones).forEach(k => scores[k] = 0);
+    currentQ = 1;
+    document.querySelectorAll('.question-block').forEach(b => {
+      b.classList.remove('active');
+      b._lastScores = {};
+      b.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      const nb = b.querySelector('.next-btn');
+      if (nb) nb.classList.remove('ready');
+    });
+    document.getElementById('result').classList.remove('active');
+    document.getElementById('q1').classList.add('active');
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressLabel').textContent = '1 of 5';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>
