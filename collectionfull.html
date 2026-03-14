@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Collection — Sarinity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest:  #0b120e;
+    --deep:    #111c15;
+    --moss:    #2d4a35;
+    --fern:    #4a7a56;
+    --sage:    #8aad96;
+    --mist:    #b8d4be;
+    --cream:   #f4f1ea;
+    --gold:    #c8a96e;
+    --clay:    #d4b896;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--forest);
+    color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(45,74,53,0.4) 0%, transparent 70%);
+    top: -150px; left: -100px;
+  }
+  .orb-2 {
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, rgba(74,122,86,0.18) 0%, transparent 70%);
+    bottom: 10%; right: -80px;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.8rem 4rem;
+    background: linear-gradient(to bottom, rgba(11,18,14,0.97), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--mist);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: rgba(244,241,234,0.55);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--mist); }
+
+  /* ─── PAGE HEADER ─── */
+  .page-header {
+    padding: 10rem 4rem 4rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+  }
+
+  .page-title em { font-style: italic; color: var(--sage); }
+
+  .page-sub {
+    font-size: 0.92rem;
+    color: rgba(244,241,234,0.5);
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+  }
+
+  .quiz-nudge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.8rem;
+    border: 1px solid rgba(138,173,150,0.25);
+    color: var(--mist);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .quiz-nudge:hover { background: rgba(138,173,150,0.08); border-color: var(--mist); }
+
+  /* ─── FILTER BAR ─── */
+  .filter-bar {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 4rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .filter-btn {
+    padding: 0.45rem 1.2rem;
+    background: transparent;
+    border: 1px solid rgba(138,173,150,0.15);
+    color: rgba(244,241,234,0.45);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: rgba(45,74,53,0.3);
+    border-color: rgba(138,173,150,0.35);
+    color: var(--mist);
+  }
+
+  /* ─── COLLECTION GRID ─── */
+  .collection-wrap {
+    padding: 0 4rem 6rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(138,173,150,0.1);
+    padding: 2.2rem 1.8rem;
+    cursor: pointer;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--card-color, rgba(45,74,53,0.1)), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .card:hover { transform: translateY(-4px); border-color: rgba(138,173,150,0.25); }
+  .card:hover::before { opacity: 1; }
+
+  .card.hidden { display: none; }
+
+  .card-price {
+    position: absolute;
+    top: 1.4rem;
+    right: 1.4rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+  }
+
+  .card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 0.3rem;
+    color: var(--mist);
+  }
+
+  .card-type {
+    font-size: 0.67rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .card-desc {
+    font-size: 0.88rem;
+    color: rgba(244,241,234,0.55);
+    line-height: 1.8;
+    margin-bottom: 1.4rem;
+  }
+
+  .card-detail {
+    font-size: 0.82rem;
+    color: rgba(244,241,234,0.4);
+    line-height: 1.75;
+    margin-bottom: 1.4rem;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .card-benefit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba(138,173,150,0.18);
+    color: rgba(138,173,150,0.65);
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+
+  .card-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, var(--moss), var(--fern));
+    color: var(--cream);
+    border: none;
+    cursor: pointer;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: opacity 0.3s;
+    margin-top: 0.5rem;
+  }
+  .card-btn:hover { opacity: 0.82; }
+
+  /* featured starter set card */
+  .card.featured {
+    border-color: rgba(200,169,110,0.2);
+    grid-column: span 1;
+  }
+
+  .card.featured .card-name { color: var(--gold); }
+
+  /* ─── BACK LINK ─── */
+  .back-wrap {
+    text-align: center;
+    padding: 0 0 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .back-link {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(244,241,234,0.3);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .back-link:hover { color: var(--mist); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 2.5rem 4rem;
+    background: #070d09;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(138,173,150,0.06);
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--mist);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-note {
+    font-size: 0.7rem;
+    color: rgba(244,241,234,0.2);
+    max-width: 360px;
+    line-height: 1.7;
+    text-align: center;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    text-decoration: none;
+    color: rgba(244,241,234,0.3);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--mist); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    nav { padding: 1.4rem 2rem; }
+    .nav-links { display: none; }
+    .collection-wrap, .page-header, .filter-bar { padding-left: 1.5rem; padding-right: 1.5rem; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+  }
+
+  @media (max-width: 540px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">Sarinity</a>
+  <ul class="nav-links">
+    <li><a href="index.html#collection">Collection</a></li>
+    <li><a href="index.html#ritual">Ritual</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="sarinity-quiz.html">Find my stone</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <p class="page-label">The Full Collection</p>
+  <h1 class="page-title">Every stone. <em>Every need.</em></h1>
+  <p class="page-sub">Fifteen stones, each paired with a science-informed mindfulness practice. Not sure where to start? Let the quiz decide for you.</p>
+  <a href="sarinitypage2.html" class="quiz-nudge">Take the quiz first →</a>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterCards('all', this)">All</button>
+  <button class="filter-btn" onclick="filterCards('anxiety', this)">Anxiety</button>
+  <button class="filter-btn" onclick="filterCards('mood', this)">Low Mood</button>
+  <button class="filter-btn" onclick="filterCards('stress', this)">Stress</button>
+  <button class="filter-btn" onclick="filterCards('confidence', this)">Confidence</button>
+  <button class="filter-btn" onclick="filterCards('clarity', this)">Clarity</button>
+  <button class="filter-btn" onclick="filterCards('transition', this)">Transition</button>
+</div>
+
+<!-- COLLECTION GRID -->
+<div class="collection-wrap">
+  <div class="cards">
+
+    <div class="card" data-tags="anxiety stress" style="--card-color: rgba(200,190,220,0.1);">
+      <div class="card-price">£32</div>
+      <div class="card-name">Amethyst</div>
+      <div class="card-type">Deep Calm & Focus</div>
+      <p class="card-desc">For the busy mind that won't switch off. Quiets racing thoughts and brings the kind of settled calm that lets you actually get things done.</p>
+      <p class="card-detail">"Known as a natural tranquilliser. Wear on your right middle finger to keep your head at peace."</p>
+      <span class="card-benefit">✧ Calm & Focus Kit</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="clarity stress transition" style="--card-color: rgba(100,160,130,0.1);">
+      <div class="card-price">£28</div>
+      <div class="card-name">Apatite</div>
+      <div class="card-type">Communication & Expression</div>
+      <p class="card-desc">For those who struggle to say what they mean or ask for what they need. Supports the connection between what you feel and what you're able to express.</p>
+      <p class="card-detail">"Fosters improved communication, mental clarity and self expression."</p>
+      <span class="card-benefit">✧ Expression Ritual Kit</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="anxiety stress" style="--card-color: rgba(138,173,150,0.12);">
+      <div class="card-price">£28</div>
+      <div class="card-name">Blue Lace Agate</div>
+      <div class="card-type">Anxiety Relief</div>
+      <p class="card-desc">For anxiety — whether it's something you've carried for years or something that flares in certain moments. Helps you find the stillness underneath the noise.</p>
+      <p class="card-detail">"Works for both long-term chronic anxiety and short-term anxiety."</p>
+      <span class="card-benefit">✧ Anxiety Support Kit</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="stress anxiety" style="--card-color: rgba(20,35,22,0.4);">
+      <div class="card-price">£34</div>
+      <div class="card-name">Black Tourmaline</div>
+      <div class="card-type">Emotional Stability</div>
+      <p class="card-desc">For when everything feels like too much. Absorbs negative energy and gives back steadiness — especially useful in demanding workplaces or on overwhelming days.</p>
+      <p class="card-detail">"Recommended for demanding occupations, active lifestyles and workplace stress relief."</p>
+      <span class="card-benefit">✧ Grounding Practice Guide</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="mood stress" style="--card-color: rgba(210,160,80,0.1);">
+      <div class="card-price">£30</div>
+      <div class="card-name">Citrine</div>
+      <div class="card-type">Joy & Positive Energy</div>
+      <p class="card-desc">For when you're looking for the light at the end of the tunnel. Warm, hopeful energy that doesn't pretend everything is fine — just gently reminds you that it can be.</p>
+      <p class="card-detail">"The colour is a symbol of hope. Brings abundance, success and positive energy all round."</p>
+      <span class="card-benefit">✧ Morning Ritual Card</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="transition mood" style="--card-color: rgba(80,160,100,0.1);">
+      <div class="card-price">£38</div>
+      <div class="card-name">Emerald</div>
+      <div class="card-type">Health & Vitality</div>
+      <p class="card-desc">For when poor health is pulling your mental wellbeing down with it. Works on mind and body together — wear on the ring or little finger.</p>
+      <p class="card-detail">"Health problems are one of the main causes of depression. Wearing emerald will help to overcome them."</p>
+      <span class="card-benefit">✧ Wellbeing Ritual Guide</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="clarity mood" style="--card-color: rgba(200,169,110,0.1);">
+      <div class="card-price">£26</div>
+      <div class="card-name">Jade</div>
+      <div class="card-type">Clarity & Equilibrium</div>
+      <p class="card-desc">For the fog. When decisions feel impossible and nothing is clear — restores emotional balance and creates the headspace to actually think things through.</p>
+      <p class="card-detail">"Promotes restoration of emotional equilibrium and mental clarity."</p>
+      <span class="card-benefit">✧ Clarity Practice Card</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="stress anxiety" style="--card-color: rgba(180,150,200,0.1);">
+      <div class="card-price">£36</div>
+      <div class="card-name">Kunzite</div>
+      <div class="card-type">Stress Relief</div>
+      <p class="card-desc">For the quiet, grinding stress that builds up over time — the kind that isn't dramatic but slowly wears you down. Deeply soothing in a way that's hard to explain until you feel it.</p>
+      <p class="card-detail">"Alleviates stress and brings a deeply calming energy."</p>
+      <span class="card-benefit">✧ Wind-Down Ritual Kit</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="anxiety" style="--card-color: rgba(160,190,210,0.1);">
+      <div class="card-price">£34</div>
+      <div class="card-name">Lepidolite</div>
+      <div class="card-type">Calm & Panic Relief</div>
+      <p class="card-desc">One of the most effective stones for panic attacks and waves of anxiety. Keep it with you always — hold it when breathing feels difficult and let the texture anchor you back.</p>
+      <p class="card-detail">"Calming properties relieving anxiety and panic attacks."</p>
+      <span class="card-benefit">✧ Panic Relief Guide</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="transition mood anxiety" style="--card-color: rgba(220,210,240,0.08);">
+      <div class="card-price">£30</div>
+      <div class="card-name">Moonstone</div>
+      <div class="card-type">Transition & Balance</div>
+      <p class="card-desc">For life's bigger changes — hormonal shifts, new motherhood, postnatal depression, or any transition that's left you feeling unsteady.</p>
+      <p class="card-detail">"Supports mental wellbeing during pregnancy, helps new mothers experiencing postnatal depression, and aids hormone regulation."</p>
+      <span class="card-benefit">✧ Transition Ritual Set</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="stress anxiety" style="--card-color: rgba(30,20,10,0.4);">
+      <div class="card-price">£36</div>
+      <div class="card-name">Obsidian</div>
+      <div class="card-type">Protection & Grounding</div>
+      <p class="card-desc">For those who absorb the energy of difficult people and situations. A protective shield — carry it when going somewhere draining and let it do the heavy lifting.</p>
+      <p class="card-detail">"Acts as a protective shield against negativity and toxic people. Offers relief for distressing memories."</p>
+      <span class="card-benefit">✧ Protection Practice Guide</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="mood stress" style="--card-color: rgba(220,160,200,0.1);">
+      <div class="card-price">£32</div>
+      <div class="card-name">Opal</div>
+      <div class="card-type">Releasing Negative Emotion</div>
+      <p class="card-desc">For anger, frustration and sadness that has nowhere to go. Works with difficult emotions rather than suppressing them — helping you move through rather than around them.</p>
+      <p class="card-detail">"To combat negative emotions — if dealing with feelings of anger, depression or stress, wearing an opal is the right way to go."</p>
+      <span class="card-benefit">✧ Emotional Release Kit</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="mood anxiety" style="--card-color: rgba(138,173,150,0.12);">
+      <div class="card-price">£24</div>
+      <div class="card-name">Rose Quartz</div>
+      <div class="card-type">Self-Love & Connection</div>
+      <p class="card-desc">For anyone who is harder on themselves than they'd ever be on someone else. Encourages warmth, self-compassion and genuine connection with the people around you.</p>
+      <p class="card-detail">"The stone of love. Helps with self-doubt, loneliness and mood swings. Releases tension and encourages self-compassion."</p>
+      <span class="card-benefit">✧ Self-Love Ritual Set</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="mood confidence" style="--card-color: rgba(255,200,80,0.08);">
+      <div class="card-price">£30</div>
+      <div class="card-name">Sunstone</div>
+      <div class="card-type">Creativity & Motivation</div>
+      <p class="card-desc">For when the ideas won't come and motivation has completely gone. Warm and energising — the kind of stone that makes starting feel possible again.</p>
+      <p class="card-detail">"Boosts creativity, productivity and motivation. If struggling with creativity, definitely go for sunstone."</p>
+      <span class="card-benefit">✧ Creativity Ritual Card</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card" data-tags="confidence clarity" style="--card-color: rgba(180,140,60,0.12);">
+      <div class="card-price">£28</div>
+      <div class="card-name">Tiger's Eye</div>
+      <div class="card-type">Confidence & Strength</div>
+      <p class="card-desc">For when self-doubt is louder than your own voice. Brings a quiet, grounded confidence — not arrogance, just a steady knowing that you're more capable than you think.</p>
+      <p class="card-detail">"Self confidence and strength. Also mental equilibrium."</p>
+      <span class="card-benefit">✧ Confidence Practice Guide</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+    <div class="card featured" data-tags="all" style="--card-color: rgba(45,74,53,0.3);">
+      <div class="card-price">£55</div>
+      <div class="card-name">The Starter Set</div>
+      <div class="card-type">Full Ritual Kit</div>
+      <p class="card-desc">Not sure where to start? Take the quiz, then come back. Three stones chosen for your needs, three tailored practices, and a 30-day journal to make it stick.</p>
+      <p class="card-detail">"Everything you need to build a ritual that actually sticks."</p>
+      <span class="card-benefit">✧ 30-Day Mind Journal</span>
+      <button class="card-btn">Add to bag</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="back-wrap">
+  <a href="index.html" class="back-link">← Back to home</a>
+</div>
+
+<footer>
+  <div class="footer-logo">Sarinity</div>
+  <p class="footer-note">Crystals are not a substitute for professional mental health support. If you are struggling, please speak to your GP or contact a mental health service.</p>
+  <ul class="footer-links">
+    <li><a href="#">Instagram</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+  function filterCards(tag, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('.card').forEach(card => {
+      if (tag === 'all') {
+        card.classList.remove('hidden');
+      } else {
+        const tags = card.dataset.tags || '';
+        tags.includes(tag) ? card.classList.remove('hidden') : card.classList.add('hidden');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
